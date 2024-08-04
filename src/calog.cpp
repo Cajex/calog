@@ -49,3 +49,30 @@ void calog::init() {
     SetConsoleMode(hOut, dwMode);
 #endif
 }
+
+std::string calog::toString(const FormatComponent e) {
+    switch (e) {
+        case TIME: return "TIME";
+        case PROFILE: return "PROFILE";
+        case MESSAGE: return "MESSAGE";
+        default: return "";
+    }
+}
+
+std::string calog::toString(const FormatProfile e) {
+    switch (e) {
+        case INFO: return "INFO";
+        case WARN: return "WARN";
+        case DEBUG: return "DEBUG";
+        default: return "ERROR";
+    }
+
+}
+
+calog::FormatComponent calog::fromStringToComponent(const std::string &string) {
+    return PROFILE;
+}
+
+calog::FormatProfile calog::fromStringToProfile(const std::string &string) {
+    return FormatProfile::WARN;
+}

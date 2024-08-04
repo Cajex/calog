@@ -41,6 +41,14 @@ namespace calog {
         DEBUG,
     };
 
+    std::string toString(FormatComponent);
+
+    std::string toString(FormatProfile);
+
+    FormatComponent fromStringToComponent(const std::string& string);
+
+    FormatProfile fromStringToProfile(const std::string& string);
+
     struct CalogContext {
         std::string format = " | {TIME} | {PROFILE} | {MESSAGE}";
     };
