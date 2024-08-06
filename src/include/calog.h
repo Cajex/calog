@@ -6,11 +6,11 @@
 
 namespace calog {
     namespace fmt {
-        template<typename T>
-        std::string format(const std::string &fmt, const T &value);
-
         template<typename T, typename... Args>
         std::string format(const std::string &fmt, const T &value, const Args&... arguments);
+
+        template<typename T>
+        std::string format(const std::string &fmt, const T &value);
 
         std::string format(const std::string &fmt);
 
@@ -37,9 +37,16 @@ namespace calog {
     enum FormatProfile {
         INFO,
         WARN,
-        ERROR,
+        ERRO,
         DEBUG,
     };
+
+    struct CalogContext {
+        std::string format = " | {TIME} | {PROFILE} | {MESSAGE}";
+        FormatProfile profile;
+    };
+
+    void init();
 
     std::string toString(FormatComponent);
 
@@ -49,9 +56,19 @@ namespace calog {
 
     FormatProfile fromStringToProfile(const std::string& string);
 
-    struct CalogContext {
-        std::string format = " | {TIME} | {PROFILE} | {MESSAGE}";
-    };
+    std::string getComponent(FormatComponent component);
 
-    void init();
+    CalogContext& getFormatContext();
+
+    void setProfile(FormatProfile profile);
+
+    void clear();
+
+    void log(const std::string& fmt);
+
+    template<typename T>
+    void log(const std::string& fmt, const T& value);
+
+    template<typename T, typename... Args>
+    void log(const std::string& fmt, const T& value, const Args&... arguments);
 }

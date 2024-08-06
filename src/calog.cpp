@@ -2,10 +2,16 @@
  * Created by Joges on 04.08.2024.
  */ 
 #include "calog.h"
+
+#include <iostream>
 #include <sstream>
+#include <map>
+#include <unordered_map>
 #if __WIN32__
 #include <windows.h>
 #endif
+
+inline calog::CalogContext formatContext;
 
 template<typename T>
 std::string calog::fmt::format(const std::string &fmt, const T &value) {
@@ -64,15 +70,75 @@ std::string calog::toString(const FormatProfile e) {
         case INFO: return "INFO";
         case WARN: return "WARN";
         case DEBUG: return "DEBUG";
-        default: return "ERROR";
+        default: return "ERRO";
     }
 
 }
 
 calog::FormatComponent calog::fromStringToComponent(const std::string &string) {
-    return PROFILE;
+    static const std::unordered_map<std::string, FormatComponent> map = {
+        {"TIME", TIME},
+        {"PROFILE", PROFILE},
+        {"MESSAGE", MESSAGE},
+    };
+    const auto item = map.find(string);
+    return item->second;
 }
 
 calog::FormatProfile calog::fromStringToProfile(const std::string &string) {
-    return FormatProfile::WARN;
+    static const std::unordered_map<std::string, FormatProfile> map = {
+        {"INFO", INFO},
+        {"WARN", WARN},
+        {"ERRO", ERRO},
+        {"DEBUG", DEBUG},
+    };
+    const auto item = map.find(string);
+    return item->second;
+}
+
+std::string calog::getComponent(const FormatComponent component) {
+    switch (component) {
+        case TIME: {
+            time_t rawtime;
+            time(&rawtime);
+            const tm *timeinfo = localtime(&rawtime);
+            char buffer[9];
+            strftime(buffer, sizeof(buffer), "%H:%M:%S", timeinfo);
+            return std::string{buffer};
+        }
+        default: return "";
+    }
+}
+
+calog::CalogContext& calog::getFormatContext() { return formatContext; }
+
+void calog::setProfile(const FormatProfile profile) {
+    formatContext.profile = profile;
+}
+
+void calog::clear() {
+#ifdef _WIN32
+    system("cls");
+#else
+    system("clear");
+#endif
+}
+
+void calog::log(const std::string& fmt) {
+    auto format = formatContext.format;
+    format = fmt::replace(format, "{TIME}", getComponent(TIME));
+    format = fmt::replace(format, "{PROFILE}", toString(formatContext.profile));
+    format = fmt::replace(format, "{MESSAGE}", fmt);
+    std::cout << format << "\n";
+}
+
+template<typename T>
+void calog::log(const std::string& fmt, const T& value) {
+    log(fmt::format(fmt, value));
+}
+
+template<typename T, typename... Args>
+void calog::log(const std::string& fmt, const T& value, const Args&... arguments) {
+    const auto output = fmt::format(fmt, value);
+    log(output, arguments...);
 }
