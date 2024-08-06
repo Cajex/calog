@@ -3,14 +3,6 @@
  */ 
 #include "calog.h"
 
-#include <iostream>
-#include <sstream>
-#include <map>
-#include <unordered_map>
-#if __WIN32__
-#include <windows.h>
-#endif
-
 inline calog::CalogContext formatContext;
 
 template<typename T>

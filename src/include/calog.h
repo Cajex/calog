@@ -2,7 +2,13 @@
  * Created by Joges on 04.08.2024.
  */ 
 #pragma once
-#include "string"
+#include <iostream>
+#include <sstream>
+#include <map>
+#include <unordered_map>
+#if __WIN32__
+#include <windows.h>
+#endif
 
 namespace calog {
     namespace fmt {
