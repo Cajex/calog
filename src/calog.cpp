@@ -59,10 +59,10 @@ std::string calog::toString(const FormatComponent e) {
 
 std::string calog::toString(const FormatProfile e) {
     switch (e) {
-        case INFO: return "INFO";
-        case WARN: return "WARN";
-        case DEBUG: return "DEBUG";
-        default: return "ERRO";
+        case INFO: return color::get({67, 188, 122}, "INFO");
+        case WARN: return color::get({253, 171, 131}, "WARN");
+        case DEBUG: return color::get({255, 111, 0}, "DEBUG");
+        default: return color::get({244, 67, 96}, "ERROR");
     }
 
 }
